@@ -6,17 +6,17 @@ using Alura.Adopet.Console.Modelos;
 
 namespace Alura.Adopet.Console.Comandos
 {
-    [DocComandoAttribute(instrucao: "import",
-        documentacao: "adopet import <ARQUIVO> comando que realiza a importação do arquivo de pets.")]
-    public class Import:IComando
+    [DocComandoAttribute(instrucao: "import-clientes",
+        documentacao: "adopet import-clientes <ARQUIVO> comando que realiza a importação do arquivo de clientes.")]
+    public class ImportCliente:IComando
     {
-        private readonly IApiService<Pet> clientPet;
+        private readonly IApiService<Cliente> client;
 
-        private readonly ILeitorDeArquivos<Pet> leitor;
+        private readonly ILeitorDeArquivos<Cliente> leitor;
 
-        public Import(IApiService<Pet> clientPet, ILeitorDeArquivos<Pet> leitor)
+        public ImportCliente(IApiService<Cliente> client, ILeitorDeArquivos<Cliente> leitor)
         {
-            this.clientPet = clientPet;
+            this.client = client;
             this.leitor = leitor;
         }
 
@@ -29,22 +29,18 @@ namespace Alura.Adopet.Console.Comandos
         {
             try
             {
-                var listaDePet = leitor.RealizaLeitura();
-                foreach (var pet in listaDePet)
+                var listaDeClientes = leitor.RealizaLeitura();
+                foreach (var cliente in listaDeClientes)
                 {                       
-                   await clientPet.CreateAsync(pet);               
+                   await client.CreateAsync(cliente);               
                 }
-                return Result.Ok().WithSuccess(new SuccessWithPets(listaDePet,"Importação Realizada com Sucesso!"));
+                return Result.Ok().WithSuccess(new SuccessWithClientes(listaDeClientes, "Importação Realizada com Sucesso!"));
             }
             catch (Exception exception)
             {
 
                 return Result.Fail(new Error("Importação falhou!").CausedBy(exception));
             }
-            
-            
-            
-            
         }
     }
 }
